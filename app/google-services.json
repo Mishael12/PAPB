@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1055483728054",
+    "firebase_url": "https://papbl-cb78d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "papbl-cb78d",
+    "storage_bucket": "papbl-cb78d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055483728054:android:9a242e877a4d73efba5617",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaWy_L3q6iXTgwsEQNXJvS4R7cgmUgXBg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
