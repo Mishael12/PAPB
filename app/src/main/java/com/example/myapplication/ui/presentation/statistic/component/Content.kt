@@ -77,119 +77,106 @@ fun Content(
                         contentColor = Color.White)) {
                     Text(text = "Pilih Tanggal")
                 }
-                Column (
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxSize(),
+                colors = CardDefaults.cardColors(primary2),
+                elevation = CardDefaults.elevatedCardElevation(12.dp)
+            ) {
+                Column(
                     modifier = Modifier
-                        .padding(start = 20.dp)
+                        .padding(start = 20.dp, top = 7.dp)
                 ) {
-                    Text(text = "Day: ${viewModel.day.value}")
-                    Text(text = "Month: ${viewModel.month.value}")
-                    Text(text = "Year: ${viewModel.year.value}")
+                    Text(
+                        text = "Bulan  :",
+                        style = Type.displayXsSemiBold(),
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Text(
+                        text = "${viewModel.month.value} - ${viewModel.year.value}",
+                        style = Type.displayXsSemiBold(),
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
-        item{
+        item {
             Card (
                 modifier = Modifier
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(primary2),
                 elevation = CardDefaults.elevatedCardElevation(12.dp)
-            ){
+            ) {
                 Column (
                     modifier = Modifier
                         .padding(start = 20.dp, top = 7.dp)
-                ){
+                ) {
                     Text(
-                        text = "Pendapatan Perhari",
+                        text = "Penjualan Perbulan (belum dipotong)",
                         style = Type.displayXsSemiBold(),
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-                    Row {
+                    if (month.isEmpty()) {
                         Text(
-                            text = "Item terjual",
+                            text = "Silakan pilih bulan terlebih dahulu",
                             style = Type.text2xsMedium(),
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = Color.Red
                         )
-                        Spacer(modifier = Modifier.width(1.dp))
-                        Box (
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 37.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ){
-                            val totalText = if (viewModel.countDay.value != null) viewModel.countDay.value.toString() else "0"
-                            Text(
-                                text = totalText,
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Row {
-                        Text(
-                            text = "Total Penjualan",
-                            style = Type.text2xsMedium(),
-                            fontSize = 12.sp
-                        )
-                        Spacer(modifier = Modifier.width(1.dp))
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 37.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            val totalText = if (viewModel.totalDay.value != null) viewModel.totalDay.value.toString() else "0"
-                            Text(
-                                text = "Rp. $totalText",
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                        Spacer(modifier = Modifier.height(5.dp))
-
-                        HorizontalLineCard()
-                        Spacer(modifier = Modifier.height(5.dp))
-
+                    }else{
                         Row {
                             Text(
-                                text = "Commission",
+                                text = "Item terjual",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
                             Spacer(modifier = Modifier.width(1.dp))
-                            Box(
+                            Box (
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(end = 37.dp),
                                 contentAlignment = Alignment.CenterEnd
-                            ) {
-                                val totalText = if (viewModel.commissionDay.value != null) viewModel.commissionDay.value.toString() else "0"
+                            ){
+                                val totalText = if (viewModel.countMonth.value != null) viewModel.countMonth.value.toString() else "0"
                                 Text(
-                                    text = "Rp. $totalText",
+                                    text = totalText,
                                     style = Type.text2xsMedium(),
-                                    fontSize = 12.sp
-                                )
+                                    fontSize = 12.sp)
                             }
                         }
                         Spacer(modifier = Modifier.height(5.dp))
-
                         Row {
                             Text(
-                                text = "Modal",
+                                text = "Commision",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
-                            Spacer(modifier = Modifier.width(250.dp))
-                            Text(
-                                text = "0",
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp)
+                            Spacer(modifier = Modifier.width(1.dp))
+                            Box (
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 37.dp),
+                                contentAlignment = Alignment.CenterEnd
+                            ){
+                                val totalText = if (viewModel.commissionMonth.value != null) viewModel.commissionMonth.value.toString() else "0"
+                                Text(
+                                    text = "Rp. $totalText",
+                                    style = Type.text2xsMedium(),
+                                    fontSize = 12.sp)
+                            }
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
 
+                        Spacer(modifier = Modifier.height(5.dp))
                         Row {
                             Text(
                                 text = "Charge",
@@ -197,28 +184,24 @@ fun Content(
                                 fontSize = 12.sp
                             )
                             Spacer(modifier = Modifier.width(1.dp))
-                            Box(
+                            Box (
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(end = 37.dp),
                                 contentAlignment = Alignment.CenterEnd
-                            ) {
-                                val totalText = if (viewModel.chargeDay.value != null) viewModel.chargeDay.value.toString() else "0"
+                            ){
+                                val totalText = if (viewModel.chargeBulan.value != null) viewModel.chargeBulan.value.toString() else "0"
                                 Text(
                                     text = "Rp. $totalText",
                                     style = Type.text2xsMedium(),
-                                    fontSize = 12.sp
-                                )
+                                    fontSize = 12.sp)
                             }
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
 
-                        HorizontalLineCard()
                         Spacer(modifier = Modifier.height(5.dp))
-
                         Row {
                             Text(
-                                text = "Total",
+                                text = "Total Modal",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
@@ -229,37 +212,37 @@ fun Content(
                                     .padding(end = 37.dp),
                                 contentAlignment = Alignment.CenterEnd
                             ) {
-                                val netTotalText = "Rp. ${viewModel.calculateNetTotalDay()}"
+                                val totalText = if (viewModel.modal.value != null) viewModel.modal.value.toString() else "0"
                                 Text(
-                                    text = netTotalText,
+                                    text = "Rp. $totalText",
                                     style = Type.text2xsMedium(),
                                     fontSize = 12.sp
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.height(15.dp))
-                        Column (
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(end = 20.dp),
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Button(
-                                onClick = {
-                                    val day = viewModel.day.value
-                                    val route = "${Route.DETAIL}/$day"
-                                    Log.d("Navigation", "Navigating to: $route")
-                                    navController.navigate(route)
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Neutral51,
-                                    contentColor = Color.White
-                                )
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Row {
+                            Text(
+                                text = "Total Penjualan",
+                                style = Type.text2xsMedium(),
+                                fontSize = 12.sp
+                            )
+                            Spacer(modifier = Modifier.width(1.dp))
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 37.dp),
+                                contentAlignment = Alignment.CenterEnd
                             ) {
-                                Text(text = "Detail")
+                                val totalText = if (viewModel.totalMonth.value != null) viewModel.totalMonth.value.toString() else "0"
+                                Text(
+                                    text = "Rp. $totalText",
+                                    style = Type.text2xsMedium(),
+                                    fontSize = 12.sp
+                                )
                             }
                         }
-
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -359,77 +342,50 @@ fun Content(
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
+
         item {
-            Card (
+            Card(
                 modifier = Modifier
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(primary2),
                 elevation = CardDefaults.elevatedCardElevation(12.dp)
             ) {
-                Column (
+                Column(
                     modifier = Modifier
                         .padding(start = 20.dp, top = 7.dp)
                 ) {
                     Text(
-                        text = "Pendapatan Perbulan (belum dipotong)",
+                        text = "Total Keuntungan",
                         style = Type.displayXsSemiBold(),
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-                    if (month.isEmpty()) {
-                        Text(
-                            text = "Silakan pilih bulan terlebih dahulu",
-                            style = Type.text2xsMedium(),
-                            fontSize = 12.sp,
-                            color = Color.Red
-                        )
-                    }else{
-                        Row {
-                            Text(
-                                text = "Item terjual",
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp
-                            )
-                            Spacer(modifier = Modifier.width(1.dp))
-                            Box (
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 37.dp),
-                                contentAlignment = Alignment.CenterEnd
-                            ){
-                                val totalText = if (viewModel.countMonth.value != null) viewModel.countMonth.value.toString() else "0"
-                                Text(
-                                    text = totalText,
-                                    style = Type.text2xsMedium(),
-                                    fontSize = 12.sp)
-                            }
-                        }
 
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Row {
+                    Row {
+                        Text(
+                            text = "Pendapatan",
+                            style = Type.text2xsMedium(),
+                            fontSize = 12.sp
+                        )
+                        Box (
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 40.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Spacer(modifier = Modifier.width(1.dp))
+                            val cashText =
                             Text(
-                                text = "Total Penjualan",
+                                text = "Rp. ${viewModel.calculateNetTotalMonth()}",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
-                            Spacer(modifier = Modifier.width(1.dp))
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(end = 37.dp),
-                                contentAlignment = Alignment.CenterEnd
-                            ) {
-                                val totalText = if (viewModel.totalMonth.value != null) viewModel.totalMonth.value.toString() else "0"
-                                Text(
-                                    text = "Rp. $totalText",
-                                    style = Type.text2xsMedium(),
-                                    fontSize = 12.sp
-                                )
-                            }
                         }
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

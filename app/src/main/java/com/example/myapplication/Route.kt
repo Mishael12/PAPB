@@ -8,4 +8,7 @@ object Route {
     const val ORDER = "Order"
     const val TRANSAKSI = "Transaksi"
     const val DETAIL = "DetailTransaksi"
+    const val MANAGE = "Manage"
+    const val PAYMENT = "PAYMENT"
+    const val MODAL = "Modal"
 }

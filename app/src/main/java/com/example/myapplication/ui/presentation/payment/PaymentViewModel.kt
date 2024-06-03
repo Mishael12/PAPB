@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.presentation.statistic
+package com.example.myapplication.ui.presentation.payment
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -6,24 +6,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.data.Resource
-import com.example.myapplication.data.repo.ModalRepo
 import com.example.myapplication.data.repo.OrderRepo
 import com.example.myapplication.data.repo.TransaksiRepo
 import com.example.myapplication.data.repo.UserRepo
-import com.example.myapplication.model.Order
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StatisticViewModel @Inject constructor(
+class PaymentViewModel@Inject constructor(
     private val orderRepo: OrderRepo,
-    private val modalRepo: ModalRepo
+    private val userRepo: UserRepo,
+    private val transaksiRepo: TransaksiRepo
 
 ) : ViewModel(){
-    private val _modal : MutableState<Long?> = mutableStateOf(null)
+
     private val _chargeBulan : MutableState<Long?> = mutableStateOf(null)
     private val _commissionDay: MutableState<Long?> = mutableStateOf(null)
     private val _commissionMonth: MutableState<Long?> = mutableStateOf(null)
@@ -41,7 +38,7 @@ class StatisticViewModel @Inject constructor(
     val paymentMethodTotals: State<Map<String, Long>?> = _paymentMethodTotals
     val chargeBulan: State<Long?> = _chargeBulan
 
-    val modal: State<Long?> = _modal
+
     val commissionMonth: State<Long?> = _commissionMonth
     val commissionDay: State<Long?> = _commissionDay
     val chargeDay: State<Long?> = _chargeDay
@@ -53,7 +50,7 @@ class StatisticViewModel @Inject constructor(
     val day : State<String> = _day
     val year : State<String> = _year
 
-    
+
 
     init {
         fetchCommissionAndChargeDay()
@@ -61,37 +58,16 @@ class StatisticViewModel @Inject constructor(
         fetchTotalAndCountDay()
         fetchTotalAndCountMonth()
         fetchTotalsByPaymentMethod()
-        fetchTotalModal()
+
     }
 
 
 
-    fun fetchTotalModal(){
-        if (_month.value.isNotEmpty()) {
-            viewModelScope.launch {
-                modalRepo.getModalByMonth(_month.value).collect { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {
-                            // Handle loading state if needed
-                        }
-                        is Resource.Success -> {
-                            _modal.value = resource.data
-                        }
-                        is Resource.Error -> {
-                            // Handle error state if needed
-                        }
-                    }
-                }
-            }
-        } else {
-            _modal.value = null
-        }
-    }
     fun fetchTotalsByPaymentMethod() {
-        val month = _month.value
-        if (month.isNotEmpty()) {
+        val day = _day.value
+        if (day.isNotEmpty()) {
             viewModelScope.launch {
-                orderRepo.getTotalByPaymentMethodAndMonth(month).collect { resource ->
+                orderRepo.getTotalByPaymentMethodAndDay(day).collect { resource ->
                     when (resource) {
                         is Resource.Success -> {
                             _paymentMethodTotals.value = resource.data
@@ -209,7 +185,6 @@ class StatisticViewModel @Inject constructor(
         _month.value = value
         fetchTotalAndCountMonth()
         fetchCommissionAndChargeMonth()
-        fetchTotalModal()
     }
 
     fun onChangeYear(value : String){

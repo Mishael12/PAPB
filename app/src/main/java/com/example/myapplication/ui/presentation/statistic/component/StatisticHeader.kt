@@ -38,9 +38,9 @@ fun StatisticHeader(
                 contentDescription = "",
                 tint = Color.Black)
         }
-        Spacer(modifier = Modifier.width(110.dp))
+        Spacer(modifier = Modifier.width(55.dp))
         Text(
-            text = "Menu",
+            text = "Statistic Perbulan",
             style = Type.text2xsSemiBold(),
             fontSize = 18.sp,
             modifier = Modifier.padding(top = 9.dp))

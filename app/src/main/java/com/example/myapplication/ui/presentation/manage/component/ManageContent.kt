@@ -1,27 +1,23 @@
-package com.example.myapplication.ui.presentation.detailTransaksi.component
+package com.example.myapplication.ui.presentation.manage.component
 
 import ShowDatePickerDialog
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,10 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.data.Resource
-import com.example.myapplication.model.Order
-import com.example.myapplication.ui.presentation.detailTransaksi.DetailTransaksiViewModel
+import com.example.myapplication.Route
+import com.example.myapplication.ui.presentation.manage.ManageViewModel
 import com.example.myapplication.ui.presentation.statistic.StatisticViewModel
+import com.example.myapplication.ui.presentation.statistic.component.HorizontalLineCard
 import com.example.myapplication.ui.theme.Neutral51
 import com.example.myapplication.ui.theme.Type
 import com.example.myapplication.ui.theme.primary
@@ -44,19 +40,14 @@ import com.example.myapplication.ui.theme.primary2
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun DetailContent(
+fun ManageContent(
     navController: NavController,
-    scope: CoroutineScope,
-    viewModel: DetailTransaksiViewModel,
-) {
-    LaunchedEffect(viewModel.day.value) {
-        viewModel.fetchItemsByDay(viewModel.day.value)
-    }
-
-    val items by viewModel.items
-
+    viewModel: ManageViewModel,
+    scope: CoroutineScope
+){
     val context = LocalContext.current
     var showDatePicker by remember { mutableStateOf(false) }
+    val paymentMethodTotals by viewModel.paymentMethodTotals
 
     if (showDatePicker) {
         ShowDatePickerDialog(
@@ -65,43 +56,42 @@ fun DetailContent(
                 viewModel.onChangeDay(day.toString())
                 viewModel.onChangeMonth(month.toString())
                 viewModel.onChangeYear(year.toString())
-
+                viewModel.fetchTotalsByPaymentMethod()
                 showDatePicker = false
             }
         )
     }
 
-    LazyColumn(
+    val month by viewModel.month
+    LazyColumn (
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
             .background(primary)
-    ) {
+            .padding(20.dp)
+    ){
         item {
             Row {
-                Button(
-                    onClick = { showDatePicker = true },
+                Button(onClick = { showDatePicker = true },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Neutral51,
-                        contentColor = Color.White
-                    )
-                ) {
+                        contentColor = Color.White)) {
                     Text(text = "Pilih Tanggal")
                 }
+
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
         item {
-            Card(
+            Card (
                 modifier = Modifier
                     .fillMaxSize(),
                 colors = CardDefaults.cardColors(primary2),
                 elevation = CardDefaults.elevatedCardElevation(12.dp)
-            ) {
-                Column(
+            ){
+                Column (
                     modifier = Modifier
                         .padding(start = 20.dp, top = 7.dp)
-                ) {
+                ){
                     Text(
                         text = "Tanggal  :",
                         style = Type.displayXsSemiBold(),
@@ -115,74 +105,29 @@ fun DetailContent(
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(5.dp))
+
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        items(items) { item ->
-            Card(
+        item{
+            Card (
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 10.dp),
+                    .fillMaxSize(),
                 colors = CardDefaults.cardColors(primary2),
                 elevation = CardDefaults.elevatedCardElevation(12.dp)
-            ) {
-                Column(
+            ){
+                Column (
                     modifier = Modifier
                         .padding(start = 20.dp, top = 7.dp)
-                ) {
+                ){
                     Text(
                         text = "Pendapatan Perhari",
                         style = Type.displayXsSemiBold(),
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(5.dp))
-
-                    Row {
-                        Text(
-                            text = "ID",
-                            style = Type.text2xsMedium(),
-                            fontSize = 12.sp
-                        )
-                        Spacer(modifier = Modifier.width(1.dp))
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 37.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Text(
-                                text = item.idBarang,
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-
-                    Row {
-                        Text(
-                            text = "Nama",
-                            style = Type.text2xsMedium(),
-                            fontSize = 12.sp
-                        )
-                        Spacer(modifier = Modifier.width(1.dp))
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 37.dp),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            Text(
-                                text = item.nama,
-                                style = Type.text2xsMedium(),
-                                fontSize = 12.sp
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-
                     Row {
                         Text(
                             text = "Item terjual",
@@ -190,24 +135,24 @@ fun DetailContent(
                             fontSize = 12.sp
                         )
                         Spacer(modifier = Modifier.width(1.dp))
-                        Box(
+                        Box (
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = 37.dp),
                             contentAlignment = Alignment.CenterEnd
-                        ) {
+                        ){
+                            val totalText = if (viewModel.countDay.value != null) viewModel.countDay.value.toString() else "0"
                             Text(
-                                text = item.jumlah.toString(),
+                                text = totalText,
                                 style = Type.text2xsMedium(),
-                                fontSize = 12.sp
-                            )
+                                fontSize = 12.sp)
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
                     }
 
+                    Spacer(modifier = Modifier.height(5.dp))
                     Row {
                         Text(
-                            text = "Total",
+                            text = "Total Penjualan",
                             style = Type.text2xsMedium(),
                             fontSize = 12.sp
                         )
@@ -218,14 +163,18 @@ fun DetailContent(
                                 .padding(end = 37.dp),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            val totalText = if (viewModel.totalDay.value != null) viewModel.totalDay.value.toString() else "0"
                             Text(
-                                text = item.total.toString(),
+                                text = "Rp. $totalText",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    HorizontalLineCard()
+                    Spacer(modifier = Modifier.height(5.dp))
 
                     Row {
                         Text(
@@ -240,14 +189,37 @@ fun DetailContent(
                                 .padding(end = 37.dp),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            val totalText = if (viewModel.commissionDay.value != null) viewModel.commissionDay.value.toString() else "0"
                             Text(
-                                text = item.commission.toString(),
+                                text = "Rp. $totalText",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
                     }
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    Row {
+                        Text(
+                            text = "Modal",
+                            style = Type.text2xsMedium(),
+                            fontSize = 12.sp
+                        )
+                        Spacer(modifier = Modifier.width(1.dp))
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 37.dp),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            Text(
+                                text = "Rp. 0",
+                                style = Type.text2xsMedium(),
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
 
                     Row {
                         Text(
@@ -262,39 +234,66 @@ fun DetailContent(
                                 .padding(end = 37.dp),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            val totalText = if (viewModel.chargeDay.value != null) viewModel.chargeDay.value.toString() else "0"
                             Text(
-                                text = item.charge.toString(),
+                                text = "Rp. $totalText",
                                 style = Type.text2xsMedium(),
                                 fontSize = 12.sp
                             )
                         }
-                        Spacer(modifier = Modifier.height(5.dp))
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    HorizontalLineCard()
+                    Spacer(modifier = Modifier.height(5.dp))
+
                     Row {
-                        Button(
-                            onClick = {
-                                viewModel.deleteItem(item.idBarang)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Neutral51,
-                                contentColor = Color.White
-                            )
+                        Text(
+                            text = "Total",
+                            style = Type.text2xsMedium(),
+                            fontSize = 12.sp
+                        )
+                        Spacer(modifier = Modifier.width(1.dp))
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 37.dp),
+                            contentAlignment = Alignment.CenterEnd
                         ) {
-                            Text(text = "Remove")
+                            val netTotalText = "Rp. ${viewModel.calculateNetTotalDay()}"
+                            Text(
+                                text = netTotalText,
+                                style = Type.text2xsMedium(),
+                                fontSize = 12.sp
+                            )
                         }
                     }
+                    Spacer(modifier = Modifier.height(15.dp))
+//                    Column (
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(end = 20.dp),
+//                        horizontalAlignment = Alignment.End
+//                    ) {
+//                        Button(
+//                            onClick = {
+//                                val day = viewModel.day.value
+//                                val route = "${Route.DETAIL}/$day"
+//                                Log.d("Navigation", "Navigating to: $route")
+//                                navController.navigate(route)
+//                            },
+//                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Neutral51,
+//                                contentColor = Color.White
+//                            )
+//                        ) {
+//                            Text(text = "Detail")
+//                        }
+//                    }
+
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
-
-
-
-
-
-
-
-
-

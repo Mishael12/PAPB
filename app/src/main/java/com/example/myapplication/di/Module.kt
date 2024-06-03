@@ -1,5 +1,6 @@
 package com.example.myapplication.di
 
+import com.example.myapplication.data.repo.ModalRepo
 import com.example.myapplication.data.repo.OrderRepo
 import com.example.myapplication.data.repo.TransaksiRepo
 import com.example.myapplication.data.repo.UserRepo
@@ -23,4 +24,8 @@ object Module {
     @Provides
     @Singleton
     fun provideTransaksiDatabase() = TransaksiRepo()
+
+    @Provides
+    @Singleton
+    fun provideModalDatabase() = ModalRepo()
 }

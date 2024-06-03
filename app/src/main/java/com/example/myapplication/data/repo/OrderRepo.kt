@@ -23,7 +23,7 @@ class OrderRepo {
     var currentOrder: OrderModelResponse? = null
 
     fun addBarang(
-        orderData: Order,
+        orderData: Order
     ) =
         callbackFlow<Resource<String>> {
             trySend(Resource.Loading())
@@ -179,9 +179,53 @@ class OrderRepo {
             awaitClose { close() }
         }
 
+    fun getTotalByPaymentMethodAndDay(day: String) =
+        callbackFlow<Resource<Map<String, Long>>> {
+            trySend(Resource.Loading())
+            db.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val items = snapshot.children.mapNotNull {
+                        it.getValue(Order::class.java)
+                    }.filter {
+                        it.day == day
+                    }
+
+                    val paymentMethodTotals = items.groupBy { it.metodePembayaran }
+                        .mapValues { entry ->
+                            entry.value.sumOf { it.total }
+                        }
+
+                    trySend(Resource.Success(paymentMethodTotals))
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    trySend(Resource.Error(error.message))
+                }
+            })
+            awaitClose { close() }
+        }
+
     suspend fun getItemsByDay(day: String): List<Order> {
         val snapshot = db.orderByChild("day").equalTo(day).get().await()
         return snapshot.children.mapNotNull { it.getValue(Order::class.java) }
     }
+
+    fun deleteBarang(idBarang: String) =
+        callbackFlow<Resource<String>> {
+            trySend(Resource.Loading())
+            db.child(idBarang).removeValue()
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        trySend(Resource.Success(data = "Barang berhasil dihapus"))
+                    } else {
+                        trySend(Resource.Error(message = "Gagal menghapus barang"))
+                    }
+                }
+                .addOnFailureListener {
+                    trySend(Resource.Error(message = "Gagal menghapus barang\n${it.message}"))
+                }
+            awaitClose { close() }
+        }
+
 
 }

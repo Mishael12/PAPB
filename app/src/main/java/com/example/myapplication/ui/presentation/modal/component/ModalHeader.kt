@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.presentation.detailTransaksi.component
+package com.example.myapplication.ui.presentation.modal.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +20,7 @@ import com.example.myapplication.Route
 import com.example.myapplication.ui.theme.Type
 
 @Composable
-fun DetailHeader(
+fun ModalHeader(
     navController: NavController
 ){
     Row(
@@ -40,7 +40,7 @@ fun DetailHeader(
         }
         Spacer(modifier = Modifier.width(110.dp))
         Text(
-            text = "Detail",
+            text = "Modal",
             style = Type.text2xsSemiBold(),
             fontSize = 18.sp,
             modifier = Modifier.padding(top = 9.dp))

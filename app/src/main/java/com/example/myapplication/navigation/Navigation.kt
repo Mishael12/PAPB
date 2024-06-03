@@ -9,8 +9,11 @@ import com.example.myapplication.Route
 import com.example.myapplication.ui.presentation.detailTransaksi.DetailTransaksi
 import com.example.myapplication.ui.presentation.intro.Intro
 import com.example.myapplication.ui.presentation.login.LoginScreen
+import com.example.myapplication.ui.presentation.manage.ManageScreen
 import com.example.myapplication.ui.presentation.menu.MenuScreen
+import com.example.myapplication.ui.presentation.modal.ModalScreen
 import com.example.myapplication.ui.presentation.order.OrderScreen
+import com.example.myapplication.ui.presentation.payment.PaymentScreen
 import com.example.myapplication.ui.presentation.register.RegisterScreen
 import com.example.myapplication.ui.presentation.statistic.StatisticScreen
 
@@ -35,9 +38,21 @@ fun Navigation(navController: NavHostController){
         composable(Route.TRANSAKSI){
             StatisticScreen(navController)
         }
-        composable("${Route.DETAIL}/{day}") { backStackEntry ->
-            val day = backStackEntry.arguments?.getString("day") ?: ""
-            DetailTransaksi(navController, day)
+        composable(Route.MANAGE){
+            ManageScreen(navController)
+        }
+        composable(Route.PAYMENT){
+            PaymentScreen(navController)
+        }
+//        composable("${Route.DETAIL}/{day}") { backStackEntry ->
+//            val day = backStackEntry.arguments?.getString("day") ?: ""
+//            DetailTransaksi(navController, day)
+//        }
+        composable(Route.DETAIL){
+            DetailTransaksi(navController)
+        }
+        composable(Route.MODAL){
+            ModalScreen(navController)
         }
     }
 }
